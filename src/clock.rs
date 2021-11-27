@@ -1,8 +1,13 @@
+//! Lite and customizable Pomodoro clock system
+
+/// Either working or resting
+/// *(It is used to detect what cycle you are in)*
 enum State {
     Working,
     Resting
 }
 
+/// A simple clock struct that returns the remaining time
 pub struct Clock {
     work_time: i16,
     rest_time: i16,
@@ -12,6 +17,7 @@ pub struct Clock {
 
 
 impl Clock {
+    /// Instantiate a new clock on working state with the given time as remaining time
     pub fn new(work_time: i16, rest_time: i16) -> Clock {
         Clock{
             work_time: work_time,
@@ -21,6 +27,7 @@ impl Clock {
         }
     }
 
+    /// Decrements the clock and change state if we enter a new cycle
     pub fn decrement(&mut self) {
         macro_rules! decrement_condition {
             ($state:expr, $time:ident) => {
@@ -40,6 +47,7 @@ impl Clock {
         }
     }
 
+    /// Displays remaining time
     pub fn show(self) -> String {
         let mut time: i16 = self.time_left;
         let minutes: i16 = time / 60;
