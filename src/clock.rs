@@ -10,12 +10,6 @@ pub struct Clock {
     time_left: i16
 }
 
-/*
-macro_rules! decrement-condition {
-    () => {
-        
-    };
-}*/
 
 impl Clock {
     pub fn new(work_time: i16, rest_time: i16) -> Clock {
@@ -28,25 +22,21 @@ impl Clock {
     }
 
     pub fn decrement(&mut self) {
+        macro_rules! decrement_condition {
+            ($state:expr, $time:ident) => {
+                if self.time_left > 0 {
+                    self.time_left -= 1;
+                    if self.time_left == 0 {
+                        self.state = $state;
+                        self.time_left = self.$time;
+                    }
+                }
+            };
+        }
+
         match self.state {
-            State::Working => {
-                if self.time_left > 0 {
-                    self.time_left -= 1;
-                    if self.time_left == 0 {
-                        self.state = State::Resting;
-                        self.time_left = self.rest_time;
-                    }
-                }
-            },
-            State::Resting => {
-                if self.time_left > 0 {
-                    self.time_left -= 1;
-                    if self.time_left == 0 {
-                        self.state = State::Working;
-                        self.time_left = self.work_time;
-                    }
-                }
-            }
+            State::Working => decrement_condition!(State::Resting, rest_time),
+            State::Resting => decrement_condition!(State::Working, work_time)
         }
     }
 
