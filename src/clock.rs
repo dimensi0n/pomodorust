@@ -2,12 +2,14 @@
 
 /// Either working or resting
 /// *(It is used to detect what cycle you are in)*
+#[derive(Copy, Clone)]
 enum State {
     Working,
     Resting
 }
 
 /// A simple clock struct that returns the remaining time
+#[derive(Copy, Clone)]
 pub struct Clock {
     work_time: i16,
     rest_time: i16,
@@ -28,7 +30,7 @@ impl Clock {
     }
 
     /// Decrements the clock and change state if we enter a new cycle
-    pub fn decrement(&mut self) {
+    pub fn decrement(&mut self) -> Clock {
         macro_rules! decrement_condition {
             ($state:expr, $time:ident) => {
                 if self.time_left > 0 {
@@ -44,7 +46,8 @@ impl Clock {
         match self.state {
             State::Working => decrement_condition!(State::Resting, rest_time),
             State::Resting => decrement_condition!(State::Working, work_time)
-        }
+        };
+        *self
     }
 
     /// Displays remaining time
